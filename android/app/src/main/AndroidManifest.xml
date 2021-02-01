@@ -3,7 +3,7 @@
     
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="Cherring Sounds"
+        android:label="Cheering Sounds"
         android:icon="@mipmap/logo">
         <activity
             android:name=".MainActivity"

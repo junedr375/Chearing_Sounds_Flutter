@@ -90,69 +90,74 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    double mainAxisHeight = height > width ? height : width;
     return Scaffold(
       body: Container(
-        height: height,
-        width: width,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('image/images/stadium.png'),
-                fit: BoxFit.fill)),
-        child: Center(
-          child: GridView.builder(
-            itemCount: 6,
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                childAspectRatio: 1),
-            itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                  onTap: () {
-                    if (checkPressed[index] == 1) {
-                      // To Start Music
-                      setState(() {
-                        checkPressed[index] = 2;
-                        // TO update others UI
-                        for (int i = 0; i < checkPressed.length; i++) {
-                          if (i != index) {
-                            checkPressed[i] = 1;
-                          }
-                        }
-                        if (!isInitialized) {
-                          // TO check if initialized or not
-                          playMusic(musics[index]);
+          height: mainAxisHeight,
+          width: width,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('image/images/stadium.png'),
+                  fit: BoxFit.fill)),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            GridView.count(
+              //    itemCount: 6,
+              crossAxisCount: 3,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              childAspectRatio: width > height ? 1.5 : 1,
+
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+
+              children: List.generate(
+                6,
+                (index) {
+                  return InkWell(
+                      onTap: () {
+                        if (checkPressed[index] == 1) {
+                          // To Start Music
                           setState(() {
-                            isInitialized = true;
+                            checkPressed[index] = 2;
+                            // TO update others UI
+                            for (int i = 0; i < checkPressed.length; i++) {
+                              if (i != index) {
+                                checkPressed[i] = 1;
+                              }
+                            }
+                            if (!isInitialized) {
+                              // TO check if initialized or not
+                              playMusic(musics[index]);
+                              setState(() {
+                                isInitialized = true;
+                              });
+                            } else {
+                              stopMusic();
+                              playMusic(musics[index]);
+                            }
                           });
                         } else {
-                          stopMusic();
-                          playMusic(musics[index]);
+                          // TO Stop Music on clicking again
+                          setState(() {
+                            checkPressed[index] = 1;
+                            stopMusic();
+                          });
                         }
-                      });
-                    } else {
-                      // TO Stop Music on clicking again
-                      setState(() {
-                        checkPressed[index] = 1;
-                        stopMusic();
-                      });
-                    }
-                  },
-                  child: Container(
-                    height: 80,
-                    width: 80,
-                    child: Image.asset(
-                      map[index][checkPressed[index]],
-                      fit: BoxFit.fill,
-                    ),
-                  ));
-            },
-          ),
-        ),
-      ),
+                      },
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(shape: BoxShape.rectangle),
+                        child: Image.asset(
+                          map[index][checkPressed[index]],
+                          fit: BoxFit.contain,
+                        ),
+                      ));
+                },
+              ),
+            ),
+          ])),
     );
   }
 }
